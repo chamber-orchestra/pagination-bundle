@@ -1,0 +1,6 @@
+pagination:
+  previous: "Назад"
+  next: "Вперед"
+  label: "Постраничная навигация"
+  current: "Текущая страница"
+  to_page: К странице %page%

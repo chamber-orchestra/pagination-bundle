@@ -1,0 +1,6 @@
+pagination:
+  previous: "Previous"
+  next: "Next"
+  label: "Paging"
+  current: "Current page"
+  to_page: To page %page%
