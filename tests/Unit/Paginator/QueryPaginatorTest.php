@@ -8,6 +8,7 @@ use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
 use ChamberOrchestra\PaginationBundle\Paginator\QueryPaginator;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\VarExporter\ProxyHelper;
 use Tests\Fixtures\Doctrine\DoctrineTestHelper;
@@ -79,5 +80,69 @@ final class QueryPaginatorTest extends TestCase
         if (PHP_VERSION_ID < 80400 && (!class_exists(ProxyHelper::class) || !method_exists(ProxyHelper::class, 'generateLazyGhost'))) {
             $this->markTestSkipped('symfony/var-exporter is required for Doctrine lazy ghosts.');
         }
+    }
+
+    public function testPaginateHonorsFetchJoinCollectionHint(): void
+    {
+        $this->skipIfLazyGhostUnavailable();
+
+        $entityManager = DoctrineTestHelper::createEntityManager();
+        DoctrineTestHelper::seedBooks($entityManager, ['A', 'B', 'C', 'D']);
+
+        $query = $entityManager->createQueryBuilder()
+            ->select('b')
+            ->from(Book::class, 'b')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery();
+
+        $query->setHint(QueryPaginator::HINT_FETCH_JOIN_COLLECTION, false);
+
+        $pagination = $this->createStub(PaginationInterface::class);
+        $pagination->method('getPage')->willReturn(1);
+        $pagination->method('getPerPageLimit')->willReturn(2);
+
+        $paginator = new class() extends QueryPaginator {
+            public bool|null $fetchJoinCollection = null;
+
+            protected function createPaginator(Query $query, bool $fetchJoinCollection): Paginator
+            {
+                $this->fetchJoinCollection = $fetchJoinCollection;
+
+                return parent::createPaginator($query, $fetchJoinCollection);
+            }
+        };
+
+        $paginator->paginate($query, $pagination);
+
+        $this->assertFalse($paginator->fetchJoinCollection);
+    }
+
+    public function testCountHonorsFetchJoinCollectionHint(): void
+    {
+        $this->skipIfLazyGhostUnavailable();
+
+        $entityManager = DoctrineTestHelper::createEntityManager();
+        DoctrineTestHelper::seedBooks($entityManager, ['A', 'B', 'C']);
+
+        $query = $entityManager->createQueryBuilder()
+            ->select('b')
+            ->from(Book::class, 'b')
+            ->getQuery();
+
+        $query->setHint(QueryPaginator::HINT_FETCH_JOIN_COLLECTION, true);
+
+        $paginator = new class() extends QueryPaginator {
+            public bool|null $fetchJoinCollection = null;
+
+            protected function createPaginator(Query $query, bool $fetchJoinCollection): Paginator
+            {
+                $this->fetchJoinCollection = $fetchJoinCollection;
+
+                return parent::createPaginator($query, $fetchJoinCollection);
+            }
+        };
+
+        $this->assertSame(3, $paginator->count($query));
+        $this->assertTrue($paginator->fetchJoinCollection);
     }
 }

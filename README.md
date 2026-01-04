@@ -1,3 +1,5 @@
+[![PHP Composer](https://github.com/chamber-orchestra/pagination-bundle/actions/workflows/php.yml/badge.svg)](https://github.com/chamber-orchestra/pagination-bundle/actions/workflows/php.yml)
+
 # ChamberOrchestra Pagination Bundle
 
 Symfony bundle for building pagination metadata and paginating arrays, Doctrine repositories, and Doctrine queries. It ships with paginator services, pagination types, Twig rendering helpers, and a small filter builder.

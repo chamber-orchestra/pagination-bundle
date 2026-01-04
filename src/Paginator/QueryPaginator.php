@@ -39,7 +39,7 @@ class QueryPaginator extends AbstractPaginator
             $fetchJoinCollection = (bool)$target->getHint(self::HINT_FETCH_JOIN_COLLECTION);
         }
 
-        $paginator = new Paginator($target, $fetchJoinCollection);
+        $paginator = $this->createPaginator($target, $fetchJoinCollection);
 
         return $paginator->getIterator();
     }
@@ -55,9 +55,14 @@ class QueryPaginator extends AbstractPaginator
             $fetchJoinCollection = (bool)$target->getHint(self::HINT_FETCH_JOIN_COLLECTION);
         }
 
-        $paginator = new Paginator($target, $fetchJoinCollection);
+        $paginator = $this->createPaginator($target, $fetchJoinCollection);
 
         return \count($paginator);
+    }
+
+    protected function createPaginator(Query $query, bool $fetchJoinCollection): Paginator
+    {
+        return new Paginator($query, $fetchJoinCollection);
     }
 
     public function supports($target): bool

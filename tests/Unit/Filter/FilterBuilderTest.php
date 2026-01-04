@@ -90,4 +90,82 @@ final class FilterBuilderTest extends TestCase
         $this->expectException(\TypeError::class);
         $builder->createWithArray(['status' => 'active'], ['status' => 'nope']);
     }
+
+    public function testCreateWithArrayUsesMappingCallback(): void
+    {
+        $builder = new FilterBuilder();
+
+        $criteria = $builder->createWithArray([
+            'enabled' => true,
+            'name' => 'john',
+        ], [
+            'enabled' => function (Criteria $criteria, $value, array $data): void {
+                $criteria->andWhere(Criteria::expr()->eq('flagged', $value));
+                $criteria->andWhere(Criteria::expr()->eq('name', $data['name']));
+            },
+        ]);
+
+        $expression = $criteria->getWhereExpression();
+        $this->assertNotNull($expression);
+
+        $comparisons = $this->collectComparisons($expression);
+
+        $fields = [];
+        foreach ($comparisons as $comparison) {
+            $fields[$comparison->getField()][] = $comparison->getValue()->getValue();
+        }
+
+        $this->assertSame([true], $fields['flagged']);
+    }
+
+    public function testCreateWithArrayHandlesMixedOperators(): void
+    {
+        $builder = new FilterBuilder();
+
+        $criteria = $builder->createWithArray([
+            'name' => '^Jo',
+            'status' => 'active$',
+            'title' => 'middle',
+            'roles' => new \ArrayObject(['admin', 'user']),
+        ]);
+
+        $expression = $criteria->getWhereExpression();
+        $this->assertNotNull($expression);
+
+        $operators = [];
+        foreach ($this->collectComparisons($expression) as $comparison) {
+            $operators[] = $comparison->getOperator();
+        }
+        sort($operators);
+
+        $expected = [Comparison::CONTAINS, Comparison::ENDS_WITH, Comparison::IN, Comparison::STARTS_WITH];
+        sort($expected);
+
+        $this->assertSame($expected, $operators);
+    }
+
+    /**
+     * @return Comparison[]
+     */
+    private function collectComparisons(mixed $expression): array
+    {
+        $comparisons = [];
+        $stack = [$expression];
+
+        while ($stack !== []) {
+            $expr = array_pop($stack);
+            if ($expr instanceof Comparison) {
+                $comparisons[] = $expr;
+                continue;
+            }
+
+            if ($expr instanceof CompositeExpression) {
+                foreach ($expr->getExpressionList() as $child) {
+                    $stack[] = $child;
+                }
+            }
+        }
+
+        return $comparisons;
+    }
 }
