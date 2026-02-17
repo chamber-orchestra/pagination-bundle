@@ -11,16 +11,21 @@ declare(strict_types=1);
 
 namespace ChamberOrchestra\PaginationBundle\Paginator;
 
+use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
+
 readonly class PaginatorRegistry
 {
+    /**
+     * @param iterable<PaginatorInterface> $paginators
+     */
     public function __construct(private iterable $paginators)
     {
     }
 
-    public function getSupportedPaginator($target): PaginatorInterface|null
+    public function getSupportedPaginator(mixed $target, PaginationInterface $pagination): ?PaginatorInterface
     {
         foreach ($this->paginators as $pager) {
-            if ($pager->supports($target)) {
+            if ($pager->supports($target, $pagination)) {
                 return $pager;
             }
         }

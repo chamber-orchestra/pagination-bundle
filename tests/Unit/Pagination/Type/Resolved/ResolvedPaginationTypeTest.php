@@ -28,11 +28,10 @@ final class ResolvedPaginationTypeTest extends TestCase
         $this->assertSame($resolver1, $resolver2);
     }
 
-    public function testBuildViewCallsInnerTypeMethods(): void
+    public function testBuildViewCallsInnerType(): void
     {
         $inner = $this->createMock(PaginationTypeInterface::class);
         $inner->expects($this->once())->method('buildView');
-        $inner->expects($this->once())->method('finishView');
 
         $resolved = new ResolvedPaginationType($inner);
 

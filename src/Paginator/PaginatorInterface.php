@@ -15,9 +15,17 @@ use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
 
 interface PaginatorInterface
 {
-    public function supports($target): bool;
+    public function supports(mixed $target, ?PaginationInterface $pagination = null): bool;
 
-    public function count($target, array $options = []): int;
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function count(mixed $target, array $options = []): int;
 
-    public function paginate($target, PaginationInterface $pagination, array $options = []): iterable;
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return iterable<mixed>
+     */
+    public function paginate(mixed $target, PaginationInterface $pagination, array $options = []): iterable;
 }

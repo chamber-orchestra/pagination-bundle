@@ -13,5 +13,6 @@ namespace ChamberOrchestra\PaginationBundle\Pagination\View;
 
 class PaginationView
 {
+    /** @var array<string, mixed> */
     public array $vars = [];
 }

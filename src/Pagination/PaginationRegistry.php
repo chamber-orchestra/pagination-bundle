@@ -12,35 +12,32 @@ declare(strict_types=1);
 namespace ChamberOrchestra\PaginationBundle\Pagination;
 
 use ChamberOrchestra\PaginationBundle\Pagination\Type\PaginationTypeInterface;
-use ChamberOrchestra\PaginationBundle\Pagination\Type\Resolved\ResolvedPaginationTypeFactoryInterface;
-use ChamberOrchestra\PaginationBundle\Pagination\Type\Resolved\ResolvedPaginationTypeInterface;
+use ChamberOrchestra\PaginationBundle\Pagination\Type\Resolved\ResolvedPaginationType;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class PaginationRegistry
 {
     /**
-     * @var ResolvedPaginationTypeInterface[]
+     * @var array<string, ResolvedPaginationType>
      */
     private array $resolved = [];
 
+    /**
+     * @param ServiceLocator<PaginationTypeInterface> $types
+     */
     public function __construct(
-        private readonly ResolvedPaginationTypeFactoryInterface $factory,
         private readonly ServiceLocator $types,
     ) {
     }
 
-    public function getType(string $name): ResolvedPaginationTypeInterface
+    public function getType(string $name): ResolvedPaginationType
     {
-        // create one pagination per request
         if (!isset($this->resolved[$name])) {
-            $this->resolved[$name] = $this->resolve($this->types->get($name));
+            $type = $this->types->get($name);
+            \assert($type instanceof PaginationTypeInterface);
+            $this->resolved[$name] = new ResolvedPaginationType($type);
         }
 
         return $this->resolved[$name];
-    }
-
-    private function resolve(PaginationTypeInterface $type): ResolvedPaginationTypeInterface
-    {
-        return $this->factory->createResolvedPaginationType($type);
     }
 }

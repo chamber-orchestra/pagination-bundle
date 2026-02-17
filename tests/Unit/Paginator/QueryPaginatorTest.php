@@ -41,14 +41,14 @@ final class QueryPaginatorTest extends TestCase
             ->orderBy('b.id', 'ASC');
 
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(2);
-        $pagination->method('getPerPageLimit')->willReturn(2);
+        $pagination->method('getPosition')->willReturn(2);
+        $pagination->method('getLimit')->willReturn(2);
 
         $paginator = new QueryPaginator();
 
         $result = $paginator->paginate($builder, $pagination);
 
-        $this->assertSame(['C', 'D'], array_map(fn(Book $book) => $book->getTitle(), iterator_to_array($result)));
+        $this->assertSame(['C', 'D'], \array_map(fn (Book $book) => $book->getTitle(), \iterator_to_array($result)));
     }
 
     public function testCountWithQuery(): void
@@ -64,20 +64,20 @@ final class QueryPaginatorTest extends TestCase
             ->getQuery();
 
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(1);
-        $pagination->method('getPerPageLimit')->willReturn(2);
+        $pagination->method('getPosition')->willReturn(1);
+        $pagination->method('getLimit')->willReturn(2);
 
         $paginator = new QueryPaginator();
 
         $this->assertSame(3, $paginator->count($query));
 
         $result = $paginator->paginate($query, $pagination);
-        $this->assertCount(2, iterator_to_array($result));
+        $this->assertCount(2, \iterator_to_array($result));
     }
 
     private function skipIfLazyGhostUnavailable(): void
     {
-        if (PHP_VERSION_ID < 80400 && (!class_exists(ProxyHelper::class) || !method_exists(ProxyHelper::class, 'generateLazyGhost'))) {
+        if (PHP_VERSION_ID < 80400 && (!\class_exists(ProxyHelper::class) || !\method_exists(ProxyHelper::class, 'generateLazyGhost'))) {
             $this->markTestSkipped('symfony/var-exporter is required for Doctrine lazy ghosts.');
         }
     }
@@ -98,11 +98,11 @@ final class QueryPaginatorTest extends TestCase
         $query->setHint(QueryPaginator::HINT_FETCH_JOIN_COLLECTION, false);
 
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(1);
-        $pagination->method('getPerPageLimit')->willReturn(2);
+        $pagination->method('getPosition')->willReturn(1);
+        $pagination->method('getLimit')->willReturn(2);
 
-        $paginator = new class() extends QueryPaginator {
-            public bool|null $fetchJoinCollection = null;
+        $paginator = new class extends QueryPaginator {
+            public ?bool $fetchJoinCollection = null;
 
             protected function createPaginator(Query $query, bool $fetchJoinCollection): Paginator
             {
@@ -131,8 +131,8 @@ final class QueryPaginatorTest extends TestCase
 
         $query->setHint(QueryPaginator::HINT_FETCH_JOIN_COLLECTION, true);
 
-        $paginator = new class() extends QueryPaginator {
-            public bool|null $fetchJoinCollection = null;
+        $paginator = new class extends QueryPaginator {
+            public ?bool $fetchJoinCollection = null;
 
             protected function createPaginator(Query $query, bool $fetchJoinCollection): Paginator
             {

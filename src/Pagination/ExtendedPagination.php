@@ -13,11 +13,11 @@ namespace ChamberOrchestra\PaginationBundle\Pagination;
 
 class ExtendedPagination extends Pagination implements ExtendedPaginationInterface
 {
-    private int|null $elementsCount = null;
+    private ?int $elementsCount = null;
 
     public function getElementsCount(): int
     {
-        return $this->elementsCount;
+        return $this->elementsCount ?? throw new \LogicException('Elements count has not been set. Ensure the paginator calls setElementsCount() before accessing this value.');
     }
 
     public function setElementsCount(int $elementsCount): void

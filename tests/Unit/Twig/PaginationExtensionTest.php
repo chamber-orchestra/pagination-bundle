@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Twig;
 
-use ChamberOrchestra\PaginationBundle\Helper\Processor;
 use ChamberOrchestra\PaginationBundle\Pagination\View\PaginationView;
+use ChamberOrchestra\PaginationBundle\Twig\Helper\Processor;
 use ChamberOrchestra\PaginationBundle\Twig\PaginationExtension;
 use ChamberOrchestra\PaginationBundle\Twig\PaginationRuntime;
 use PHPUnit\Framework\TestCase;
-use Twig\Error\RuntimeError;
-use Twig\TwigFunction;
 use Twig\Environment;
+use Twig\Error\RuntimeError;
 use Twig\Loader\ArrayLoader;
 use Twig\RuntimeLoader\RuntimeLoaderInterface;
+use Twig\TwigFunction;
 
 final class PaginationExtensionTest extends TestCase
 {
@@ -36,10 +36,10 @@ final class PaginationExtensionTest extends TestCase
         ]);
         $env = new Environment($loader);
         $env->addExtension(new PaginationExtension());
-        $env->addRuntimeLoader(new class() implements RuntimeLoaderInterface {
-            public function load(string $class): object|null
+        $env->addRuntimeLoader(new class implements RuntimeLoaderInterface {
+            public function load(string $class): ?object
             {
-                if ($class !== PaginationRuntime::class) {
+                if (PaginationRuntime::class !== $class) {
                     return null;
                 }
 

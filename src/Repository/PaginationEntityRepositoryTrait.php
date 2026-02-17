@@ -19,7 +19,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * @mixin EntityRepository
+ * @mixin EntityRepository<object>
  */
 trait PaginationEntityRepositoryTrait
 {

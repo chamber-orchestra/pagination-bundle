@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integrational\Helper;
 
-use ChamberOrchestra\PaginationBundle\Helper\Processor;
 use ChamberOrchestra\PaginationBundle\Pagination\View\PaginationView;
+use ChamberOrchestra\PaginationBundle\Twig\Helper\Processor;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;

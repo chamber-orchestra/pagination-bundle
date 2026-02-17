@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Pagination;
 
-use ChamberOrchestra\PaginationBundle\PagingInterface;
 use ChamberOrchestra\PaginationBundle\PaginationAwareTrait;
+use ChamberOrchestra\PaginationBundle\PagingInterface;
 use PHPUnit\Framework\TestCase;
 
 final class PaginationAwareTraitTest extends TestCase
 {
     public function testWithPagingSetsProperty(): void
     {
-        $object = new class() {
+        $object = new class {
             use PaginationAwareTrait;
 
             public function getPaging(): ?PagingInterface

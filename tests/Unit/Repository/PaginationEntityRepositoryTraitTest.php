@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Repository;
 
 use ChamberOrchestra\PaginationBundle\Exception\LogicException;
-use ChamberOrchestra\PaginationBundle\PagingInterface;
 use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
+use ChamberOrchestra\PaginationBundle\PagingInterface;
 use ChamberOrchestra\PaginationBundle\Repository\PaginationEntityRepositoryTrait;
 use Doctrine\Common\Collections\Criteria;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ final class PaginationEntityRepositoryTraitTest extends TestCase
 {
     public function testListUsesListBy(): void
     {
-        $object = new class() {
+        $object = new class {
             use PaginationEntityRepositoryTrait;
 
             public array $listByArgs = [];
@@ -40,7 +40,7 @@ final class PaginationEntityRepositoryTraitTest extends TestCase
         $criteria = ['status' => 'active'];
         $orderBy = ['id' => 'ASC'];
 
-        $object = new class() {
+        $object = new class {
             use PaginationEntityRepositoryTrait;
 
             public array $paginateArgs = [];
@@ -63,7 +63,7 @@ final class PaginationEntityRepositoryTraitTest extends TestCase
     {
         $criteria = new Criteria();
 
-        $object = new class() {
+        $object = new class {
             use PaginationEntityRepositoryTrait;
 
             public ?Criteria $matchedCriteria = null;
@@ -88,7 +88,7 @@ final class PaginationEntityRepositoryTraitTest extends TestCase
     {
         $criteria = new Criteria();
 
-        $object = new class() {
+        $object = new class {
             use PaginationEntityRepositoryTrait;
 
             public ?Criteria $matchedCriteria = null;
@@ -114,7 +114,7 @@ final class PaginationEntityRepositoryTraitTest extends TestCase
         $criteria = ['status' => 'active'];
         $orderBy = ['id' => 'DESC'];
 
-        $object = new class() {
+        $object = new class {
             use PaginationEntityRepositoryTrait;
 
             public array $findByArgs = [];
@@ -137,7 +137,7 @@ final class PaginationEntityRepositoryTraitTest extends TestCase
     {
         $pagination = $this->createStub(PaginationInterface::class);
 
-        $object = new class() {
+        $object = new class {
             use PaginationEntityRepositoryTrait;
 
             public function callPaginate(mixed $target, PaginationInterface $pagination, array $options = []): iterable
@@ -161,7 +161,7 @@ final class PaginationEntityRepositoryTraitTest extends TestCase
             ->with('target', $pagination, ['order' => 'ASC'])
             ->willReturn(['paged']);
 
-        $object = new class() {
+        $object = new class {
             use PaginationEntityRepositoryTrait;
 
             public function callPaginate(mixed $target, PaginationInterface $pagination, array $options = []): iterable

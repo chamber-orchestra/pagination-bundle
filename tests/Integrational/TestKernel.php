@@ -29,7 +29,7 @@ final class TestKernel extends Kernel
             new FrameworkBundle(),
             new ChamberOrchestraViewBundle(),
             new ChamberOrchestraPaginationBundle(),
-//            new DoctrineBundle(),
+            //            new DoctrineBundle(),
         ];
     }
 
@@ -38,16 +38,15 @@ final class TestKernel extends Kernel
         $container->extension('framework', [
             'secret' => 'test_secret',
             'test' => true,
-            'form' => true,
             'serializer' => ['enabled' => true],
         ]);
         $container->extension('chamber_orchestra_pagination', []);
         $container->extension('chamber_orchestra_view', []);
-//        $container->extension('doctrine', [
-//            'orm' => [
-//                'enable_native_lazy_objects' => true,
-//            ],
-//        ]);
+        //        $container->extension('doctrine', [
+        //            'orm' => [
+        //                'enable_native_lazy_objects' => true,
+        //            ],
+        //        ]);
     }
 
     public function getProjectDir(): string

@@ -13,6 +13,6 @@ namespace ChamberOrchestra\PaginationBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ChamberOrchestraPaginationBundle extends Bundle
+final class ChamberOrchestraPaginationBundle extends Bundle
 {
 }

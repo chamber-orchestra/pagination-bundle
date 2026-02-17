@@ -12,14 +12,13 @@ declare(strict_types=1);
 namespace ChamberOrchestra\PaginationBundle;
 
 use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
-use Doctrine\Common\Collections\Collection;
 
 interface PagingInterface
 {
     /**
-     * @param mixed $target - anything that needs to be paginated
+     * @param array<string, mixed> $options
      *
-     * @return array|Collection current page of elements
+     * @return iterable<mixed>
      */
-    public function paginate($target, PaginationInterface $pagination, array $options = []): iterable;
+    public function paginate(mixed $target, PaginationInterface $pagination, array $options = []): iterable;
 }

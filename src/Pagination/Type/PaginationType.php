@@ -18,13 +18,17 @@ class PaginationType extends AbstractPaginationType
 {
     public function buildView(PaginationView $view, PaginationInterface $pagination, array $options = []): void
     {
-        $current = $pagination->getPage();
+        parent::buildView($view, $pagination, $options);
 
-        $view->vars = [
+        $current = (int) $pagination->getPosition();
+
+        /** @var array<string, mixed> $merged */
+        $merged = \array_replace_recursive($view->vars, [
             'current' => $current,
-            'start_page' => 1,
+            'start' => 1,
             'previous' => $current - 1 > 0 ? $current - 1 : null,
-            'next' => $current + 1,
-        ];
+            'next' => $current + 1, // always set — total count unknown; consumers determine end-of-data from empty results
+        ]);
+        $view->vars = $merged;
     }
 }

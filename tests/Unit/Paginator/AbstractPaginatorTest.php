@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Paginator;
 
+use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
 use ChamberOrchestra\PaginationBundle\Paginator\AbstractPaginator;
 use ChamberOrchestra\PaginationBundle\Paginator\PaginatorInterface;
 use PHPUnit\Framework\TestCase;
@@ -12,18 +13,18 @@ final class AbstractPaginatorTest extends TestCase
 {
     public function testImplementsPaginatorInterface(): void
     {
-        $paginator = new class() extends AbstractPaginator {
-            public function supports($target): bool
+        $paginator = new class extends AbstractPaginator {
+            public function supports(mixed $target, ?PaginationInterface $pagination = null): bool
             {
                 return false;
             }
 
-            public function count($target, array $options = []): int
+            public function count(mixed $target, array $options = []): int
             {
                 return 0;
             }
 
-            public function paginate($target, \ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface $pagination, array $options = []): iterable
+            public function paginate(mixed $target, PaginationInterface $pagination, array $options = []): iterable
             {
                 return [];
             }

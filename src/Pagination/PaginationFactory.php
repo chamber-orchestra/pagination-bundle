@@ -17,6 +17,9 @@ readonly class PaginationFactory
     {
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function create(string $name, array $options = []): PaginationInterface
     {
         $type = $this->registry->getType($name);

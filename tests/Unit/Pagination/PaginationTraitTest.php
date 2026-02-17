@@ -22,8 +22,8 @@ final class PaginationTraitTest extends TestCase
             ->with('range', ['page' => 2])
             ->willReturn($pagination);
 
-        $container = $this->createStub(ContainerInterface::class);
-        $container->method('get')->with(PaginationFactory::class)->willReturn($factory);
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects($this->once())->method('get')->with(PaginationFactory::class)->willReturn($factory);
 
         $object = new class($container) {
             use PaginationTrait;

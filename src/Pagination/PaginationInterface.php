@@ -15,11 +15,23 @@ use ChamberOrchestra\PaginationBundle\Pagination\View\PaginationView;
 
 interface PaginationInterface
 {
+    /**
+     * Returns the pagination type name used to create this pagination.
+     */
     public function getName(): string;
 
-    public function getPage(): int|null;
+    /**
+     * Returns the current position in the dataset (page number or cursor value).
+     */
+    public function getPosition(): int|string|null;
 
-    public function getPerPageLimit(): int;
+    /**
+     * Returns the maximum number of items displayed per page.
+     */
+    public function getLimit(): int;
 
+    /**
+     * Builds and returns the view representation of this pagination.
+     */
     public function createView(): PaginationView;
 }
