@@ -15,7 +15,7 @@ use ChamberOrchestra\PaginationBundle\Pagination\View\PaginationView;
 
 class Pagination implements PaginationInterface
 {
-    public function __construct(protected readonly PaginationConfigInterface $config)
+    public function __construct(protected readonly PaginationConfigBuilder $config)
     {
     }
 
@@ -24,7 +24,7 @@ class Pagination implements PaginationInterface
         $type = $this->config->getType();
         $options = $this->config->getOptions();
 
-        $view = $type->createView($this);
+        $view = new PaginationView();
         $type->buildView($view, $this, $options);
 
         return $view;
@@ -35,13 +35,13 @@ class Pagination implements PaginationInterface
         return $this->config->getName();
     }
 
-    public function getPage(): int
+    public function getPosition(): int|string|null
     {
-        return $this->config->getPage();
+        return $this->config->getPosition();
     }
 
-    public function getPerPageLimit(): int
+    public function getLimit(): int
     {
-        return $this->config->getPerPageLimit();
+        return $this->config->getLimit();
     }
 }

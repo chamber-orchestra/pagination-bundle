@@ -1,21 +1,21 @@
 {% trans_default_domain "pagination" %}
-{% if pages_count > 1 %}
+{% if pagesCount > 1 %}
     {% set _route = app.request.attributes.get("_route") %}
     {% set _route_params = app.request.attributes.get("_route_params")|merge(app.request.query.all()) %}
-    {% set _route_params = _route_params|merge({(page_parameter): null }) %}
+    {% set _route_params = _route_params|merge({(parameter): null }) %}
     <nav class="text-center pagination-container" aria-label="{{ 'pagination.label'|trans }}">
         <ul class="pagination">
             {% if previous is defined %}
                 <li class="page-item">
                     {% if previous > 1 %}
                         <a class="page-link" rel="prev" aria-label="{{ "pagination.previous"|trans }}"
-                           href="{{ path(_route, _route_params|merge({(page_parameter): previous})) }}">
+                           href="{{ path(_route, _route_params|merge({(parameter): previous})) }}">
                             <i class="fa fa-fw fa-angle-double-left"></i>
                             {{ 'pagination.previous'|trans }}
                         </a>
                     {% else %}
                         <a class="page-link" rel="prev" aria-label="{{ "pagination.previous"|trans }}"
-                           href="{{ path(_route, _route_params|merge({(page_parameter): null })) }}">
+                           href="{{ path(_route, _route_params|merge({(parameter): null })) }}">
                             <i class="fa fa-fw fa-angle-double-left"></i>
                             {{ 'pagination.previous'|trans }}
                         </a>
@@ -30,15 +30,15 @@
                 </li>
             {% endif %}
 
-            {% if start_page > 1 %}
+            {% if start > 1 %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ path(_route, _route_params|merge({(page_parameter): null})) }}">1</a>
+                    <a class="page-link" href="{{ path(_route, _route_params|merge({(parameter): null})) }}">1</a>
                 </li>
-                {% if start_page == 3 %}
+                {% if start == 3 %}
                     <li class="page-item">
-                        <a class="page-link" href="{{ path(_route, _route_params|merge({(page_parameter): 2})) }}">2</a>
+                        <a class="page-link" href="{{ path(_route, _route_params|merge({(parameter): 2})) }}">2</a>
                     </li>
-                {% elseif start_page != 2 %}
+                {% elseif start != 2 %}
                     <li class="page-item disabled">
                         <a class="page-link" tabindex="-1">
                             <i class="fa fa-fw fa-ellipsis-h"></i>
@@ -52,10 +52,10 @@
                     <li class="page-item">
                         {% if page > 1 %}
                             <a class="page-link"
-                               href="{{ path(_route, _route_params|merge({(page_parameter): page})) }}">{{ page }}</a>
+                               href="{{ path(_route, _route_params|merge({(parameter): page})) }}">{{ page }}</a>
                         {% else %}
                             <a class="page-link"
-                               href="{{ path(_route, _route_params|merge({(page_parameter): null})) }}">{{ page }}</a>
+                               href="{{ path(_route, _route_params|merge({(parameter): null})) }}">{{ page }}</a>
                         {% endif %}
                     </li>
                 {% else %}
@@ -68,9 +68,9 @@
                 {% endif %}
             {% endfor %}
 
-            {% if pages_count > end_page %}
-                {% if pages_count > (end_page + 1) %}
-                    {% if pages_count > (end_page + 2) %}
+            {% if pagesCount > end %}
+                {% if pagesCount > (end + 1) %}
+                    {% if pagesCount > (end + 2) %}
                         <li class="page-item disabled">
                             <a class="page-link">
                                 <i class="fa fa-fw fa-ellipsis-h"></i>
@@ -79,16 +79,16 @@
                     {% else %}
                         <li class="page-item">
                             <a class="page-link"
-                               href="{{ path(_route, _route_params|merge({(page_parameter): (pages_count - 1)})) }}">
-                                {{ pages_count - 1 }}
+                               href="{{ path(_route, _route_params|merge({(parameter): (pagesCount - 1)})) }}">
+                                {{ pagesCount - 1 }}
                             </a>
                         </li>
                     {% endif %}
                 {% endif %}
                 <li class="page-item">
                     <a class="page-link"
-                       href="{{ path(_route, _route_params|merge({(page_parameter): pages_count})) }}">
-                        {{ pages_count }}
+                       href="{{ path(_route, _route_params|merge({(parameter): pagesCount})) }}">
+                        {{ pagesCount }}
                     </a>
                 </li>
             {% endif %}
@@ -96,7 +96,7 @@
             {% if next is defined %}
                 <li class="page-item">
                     <a rel="next" class="page-link" aria-label="{{ "pagination.next"|trans }}"
-                       href="{{ path(_route, _route_params|merge({(page_parameter): next})) }}">
+                       href="{{ path(_route, _route_params|merge({(parameter): next})) }}">
                         {{ 'pagination.next'|trans }}
                         <i class="fa fa-fw fa-angle-double-right"></i>
                     </a>

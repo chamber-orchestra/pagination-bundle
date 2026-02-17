@@ -15,7 +15,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 trait PaginationAwareTrait
 {
-    protected PagingInterface|null $paging = null;
+    protected ?PagingInterface $paging = null;
 
     #[Required]
     public function withPaging(PagingInterface $paging): void

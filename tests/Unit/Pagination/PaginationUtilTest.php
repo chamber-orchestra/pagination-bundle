@@ -15,8 +15,8 @@ final class PaginationUtilTest extends TestCase
     public function testGetOffsetUsesPageAndLimit(): void
     {
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(3);
-        $pagination->method('getPerPageLimit')->willReturn(5);
+        $pagination->method('getPosition')->willReturn(3);
+        $pagination->method('getLimit')->willReturn(5);
 
         $this->assertSame(10, PaginationUtil::getOffset($pagination));
     }
@@ -31,18 +31,18 @@ final class PaginationUtilTest extends TestCase
 
     public function testGetPagesCountUsesElementsCount(): void
     {
-        $pagination = new class() implements ExtendedPaginationInterface {
+        $pagination = new class implements ExtendedPaginationInterface {
             public function getName(): string
             {
                 return 'range';
             }
 
-            public function getPage(): int|null
+            public function getPosition(): int|string|null
             {
                 return 1;
             }
 
-            public function getPerPageLimit(): int
+            public function getLimit(): int
             {
                 return 3;
             }

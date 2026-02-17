@@ -19,51 +19,55 @@ use Doctrine\ORM\EntityRepository;
 class EntityRepositoryPaginator extends AbstractPaginator
 {
     /**
-     * @param EntityRepository $target
+     * @param array<string, mixed> $options
+     *
+     * @return iterable<mixed>
      */
-    public function paginate($target, PaginationInterface $pagination, array $options = []): iterable
+    public function paginate(mixed $target, PaginationInterface $pagination, array $options = []): iterable
     {
-        $criteria = [];
-        if (isset($options['criteria'])) {
-            $criteria = $options['criteria'];
-        }
+        \assert($target instanceof EntityRepository);
 
-        $orderBy = null;
-        if (isset($options['orderBy'])) {
-            $orderBy = $options['orderBy'];
-        }
+        $criteria = $options['criteria'] ?? [];
+        /** @var array<string, 'ASC'|'DESC'>|null $orderBy */
+        $orderBy = $options['orderBy'] ?? null;
 
         if ($criteria instanceof Criteria) {
-            $collection = $target->matching($criteria);
-
             $criteria
                 ->setFirstResult(PaginationUtil::getOffset($pagination))
-                ->setMaxResults($pagination->getPerPageLimit())
+                ->setMaxResults($pagination->getLimit())
                 ->orderBy($orderBy ?: []);
 
-            return $collection;
+            return $target->matching($criteria);
         }
 
-        return $target->findBy($criteria, $orderBy, $pagination->getPerPageLimit(), PaginationUtil::getOffset($pagination));
+        \assert(\is_array($criteria));
+        /** @var array<string, mixed> $arrayCriteria */
+        $arrayCriteria = $criteria;
+
+        return $target->findBy($arrayCriteria, $orderBy, $pagination->getLimit(), PaginationUtil::getOffset($pagination));
     }
 
-    public function count($target, array $options = []): int
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function count(mixed $target, array $options = []): int
     {
-        $criteria = [];
-        if (isset($options['criteria'])) {
-            $criteria = $options['criteria'];
-        }
+        \assert($target instanceof EntityRepository);
+
+        $criteria = $options['criteria'] ?? [];
 
         if ($criteria instanceof Criteria) {
-            $collection = $target->matching($criteria);
-
-            return $collection->count();
+            return $target->matching($criteria)->count();
         }
 
-        return $target->count($criteria);
+        \assert(\is_array($criteria));
+        /** @var array<string, mixed> $arrayCriteria */
+        $arrayCriteria = $criteria;
+
+        return $target->count($arrayCriteria);
     }
 
-    public function supports($target): bool
+    public function supports(mixed $target, ?PaginationInterface $pagination = null): bool
     {
         return $target instanceof EntityRepository;
     }

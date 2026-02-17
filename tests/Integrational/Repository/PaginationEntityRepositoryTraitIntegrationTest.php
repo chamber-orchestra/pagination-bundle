@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Integrational\Repository;
 
-use ChamberOrchestra\PaginationBundle\Paging;
 use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
 use ChamberOrchestra\PaginationBundle\Paginator\EntityRepositoryPaginator;
 use ChamberOrchestra\PaginationBundle\Paginator\PaginatorRegistry;
+use ChamberOrchestra\PaginationBundle\Paging;
 use ChamberOrchestra\PaginationBundle\Repository\PaginationEntityRepositoryTrait;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
@@ -35,12 +35,12 @@ final class PaginationEntityRepositoryTraitIntegrationTest extends KernelTestCas
         $repository->withPaging($paging);
 
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(2);
-        $pagination->method('getPerPageLimit')->willReturn(1);
+        $pagination->method('getPosition')->willReturn(2);
+        $pagination->method('getLimit')->willReturn(1);
 
         $result = $repository->listBy([], ['id' => 'ASC'], $pagination);
 
-        $this->assertSame(['B'], array_map(static fn(Book $book) => $book->getTitle(), $result));
+        $this->assertSame(['B'], \array_map(static fn (Book $book) => $book->getTitle(), $result));
     }
 
     public function testListByWithCriteriaUsesMatchingAndLimit(): void
@@ -59,8 +59,8 @@ final class PaginationEntityRepositoryTraitIntegrationTest extends KernelTestCas
         $criteria = new Criteria();
         $result = $repository->listBy($criteria, ['id' => 'DESC'], 2);
 
-        $books = $result instanceof \Traversable ? iterator_to_array($result) : $result;
-        $titles = array_map(static fn(Book $book) => $book->getTitle(), $books);
+        $books = $result instanceof \Traversable ? \iterator_to_array($result) : $result;
+        $titles = \array_map(static fn (Book $book) => $book->getTitle(), $books);
 
         $this->assertSame(['C', 'B'], $titles);
         $this->assertSame(['id' => 'DESC'], $criteria->getOrderings());
@@ -84,17 +84,17 @@ final class PaginationEntityRepositoryTraitIntegrationTest extends KernelTestCas
         $repository->withPaging($paging);
 
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(1);
-        $pagination->method('getPerPageLimit')->willReturn(2);
+        $pagination->method('getPosition')->willReturn(1);
+        $pagination->method('getLimit')->willReturn(2);
 
         $result = $repository->list(['id' => 'ASC'], $pagination);
 
-        $this->assertSame(['A', 'B'], array_map(static fn(Book $book) => $book->getTitle(), $result));
+        $this->assertSame(['A', 'B'], \array_map(static fn (Book $book) => $book->getTitle(), $result));
     }
 
     private function skipIfLazyGhostUnavailable(): void
     {
-        if (PHP_VERSION_ID < 80400 && (!class_exists(ProxyHelper::class) || !method_exists(ProxyHelper::class, 'generateLazyProxy'))) {
+        if (PHP_VERSION_ID < 80400 && (!\class_exists(ProxyHelper::class) || !\method_exists(ProxyHelper::class, 'generateLazyProxy'))) {
             $this->markTestSkipped('symfony/var-exporter is required for Doctrine lazy ghosts.');
         }
     }

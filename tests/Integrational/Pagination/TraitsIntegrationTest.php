@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Integrational\Pagination;
 
+use ChamberOrchestra\PaginationBundle\Pagination\Type\PaginationType;
 use ChamberOrchestra\PaginationBundle\PaginationAwareTrait;
 use ChamberOrchestra\PaginationBundle\PaginationTrait;
-use ChamberOrchestra\PaginationBundle\Pagination\Type\PaginationType;
-use ChamberOrchestra\PaginationBundle\Paging;
 use ChamberOrchestra\PaginationBundle\Paginator\ArrayPaginator;
 use ChamberOrchestra\PaginationBundle\Paginator\PaginatorRegistry;
+use ChamberOrchestra\PaginationBundle\Paging;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 final class TraitsIntegrationTest extends KernelTestCase
@@ -28,18 +28,18 @@ final class TraitsIntegrationTest extends KernelTestCase
 
             public function buildPagination(): \ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface
             {
-                return $this->createPagination(PaginationType::class, ['page' => 1, 'per_page_limit' => 2]);
+                return $this->createPagination(PaginationType::class, ['page' => 1, 'limit' => 2]);
             }
         };
 
         $pagination = $object->buildPagination();
-        $this->assertSame(1, $pagination->getPage());
+        $this->assertSame(1, $pagination->getPosition());
     }
 
     public function testPaginationAwareTraitStoresPaging(): void
     {
         self::bootKernel();
-        $object = new class() {
+        $object = new class {
             use PaginationAwareTrait;
 
             public function getPaging(): ?Paging

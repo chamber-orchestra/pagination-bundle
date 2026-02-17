@@ -20,8 +20,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 trait PaginationTrait
 {
+    /**
+     * @param array<string, mixed> $options
+     */
     protected function createPagination(string $type, array $options = []): PaginationInterface
     {
-        return $this->container->get(PaginationFactory::class)->create($type, $options);
+        $factory = $this->container->get(PaginationFactory::class);
+        \assert($factory instanceof PaginationFactory);
+
+        return $factory->create($type, $options);
     }
 }

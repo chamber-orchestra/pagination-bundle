@@ -56,8 +56,8 @@ final class EntityRepositoryPaginatorTest extends TestCase
             ->willReturn($collection);
 
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(2);
-        $pagination->method('getPerPageLimit')->willReturn(5);
+        $pagination->method('getPosition')->willReturn(2);
+        $pagination->method('getLimit')->willReturn(5);
 
         $paginator = new EntityRepositoryPaginator();
         $result = $paginator->paginate($repository, $pagination, ['criteria' => $criteria, 'orderBy' => ['id' => 'DESC']]);
@@ -81,8 +81,8 @@ final class EntityRepositoryPaginatorTest extends TestCase
             ->willReturn([1, 2]);
 
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(1);
-        $pagination->method('getPerPageLimit')->willReturn(10);
+        $pagination->method('getPosition')->willReturn(1);
+        $pagination->method('getLimit')->willReturn(10);
 
         $paginator = new EntityRepositoryPaginator();
         $result = $paginator->paginate($repository, $pagination, ['criteria' => ['status' => 'active'], 'orderBy' => ['id' => 'ASC']]);

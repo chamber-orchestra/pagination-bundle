@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace ChamberOrchestra\PaginationBundle\Twig;
 
-use ChamberOrchestra\PaginationBundle\Helper\Processor;
 use ChamberOrchestra\PaginationBundle\Pagination\View\PaginationView;
+use ChamberOrchestra\PaginationBundle\Twig\Helper\Processor;
 use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 
@@ -23,11 +23,13 @@ readonly class PaginationRuntime implements RuntimeExtensionInterface
     }
 
     /**
+     * @param array<string, mixed> $viewParams
+     *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function render(Environment $env, PaginationView $pagination, ?string $template = null, array $viewParams = []): string
+    public function render(Environment $env, PaginationView $pagination, string $template = '@ChamberOrchestraPagination/pagination/sliding.html.twig', array $viewParams = []): string
     {
         return $this->processor->render($env, $pagination, $template, $viewParams);
     }

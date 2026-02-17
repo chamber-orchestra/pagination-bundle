@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Pagination\Type;
 
 use ChamberOrchestra\PaginationBundle\Exception\RuntimeException;
-use ChamberOrchestra\PaginationBundle\Pagination\PaginationConfigBuilderInterface;
+use ChamberOrchestra\PaginationBundle\Pagination\PaginationConfigBuilder;
 use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
 use ChamberOrchestra\PaginationBundle\Pagination\Type\AbstractPaginationType;
 use ChamberOrchestra\PaginationBundle\Pagination\View\PaginationView;
@@ -30,7 +30,7 @@ final class AbstractPaginationTypeTest extends TestCase
         $options = $resolver->resolve([]);
 
         $this->assertSame(4, $options['page']);
-        $this->assertSame(12, $options['per_page_limit']);
+        $this->assertSame(12, $options['limit']);
     }
 
     public function testConfigureOptionsThrowsWithoutRequest(): void
@@ -53,14 +53,14 @@ final class AbstractPaginationTypeTest extends TestCase
             }
         };
 
-        $builder = $this->createMock(PaginationConfigBuilderInterface::class);
-        $builder->expects($this->once())->method('setPage')->with(2)->willReturnSelf();
-        $builder->expects($this->once())->method('setPerPageLimit')->with(5)->willReturnSelf();
+        $builder = $this->createMock(PaginationConfigBuilder::class);
+        $builder->expects($this->once())->method('setPosition')->with(2)->willReturnSelf();
+        $builder->expects($this->once())->method('setLimit')->with(5)->willReturnSelf();
         $builder->expects($this->once())->method('setExtended')->with(false)->willReturnSelf();
 
         $type->buildPagination($builder, [
             'page' => 2,
-            'per_page_limit' => 5,
+            'limit' => 5,
             'extended' => false,
         ]);
     }
@@ -77,6 +77,6 @@ final class AbstractPaginationTypeTest extends TestCase
         $type->configureOptions($resolver);
 
         $this->expectException(\ChamberOrchestra\PaginationBundle\Exception\InvalidOptionsException::class);
-        $resolver->resolve(['per_page_limit' => 0]);
+        $resolver->resolve(['limit' => 0]);
     }
 }

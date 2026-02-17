@@ -19,6 +19,11 @@ use ChamberOrchestra\PaginationBundle\Pagination\View\PaginationView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Pagination type that produces numbered page links with a configurable sliding range.
+ *
+ * Primarily intended for Twig templates where users navigate via page numbers.
+ */
 class RangeType extends AbstractPaginationType
 {
     public function configureOptions(OptionsResolver $resolver): void
@@ -33,8 +38,8 @@ class RangeType extends AbstractPaginationType
         $resolver->setAllowedValues('extended', true);
 
         $resolver->setAllowedTypes('page_range', 'int');
-        $resolver->setNormalizer('page_range', function (Options $options, $value) {
-            $limit = \abs((int)$value);
+        $resolver->setNormalizer('page_range', function (Options $options, int $value) {
+            $limit = \abs($value);
             if (!$limit) {
                 throw new InvalidOptionsException("Parameter 'page_range' must be a positive int.");
             }
@@ -45,20 +50,24 @@ class RangeType extends AbstractPaginationType
 
     public function buildView(PaginationView $view, PaginationInterface $pagination, array $options = []): void
     {
-        /* @var ExtendedPaginationInterface $pagination */
+        if (!$pagination instanceof ExtendedPaginationInterface) {
+            throw new \LogicException(self::class.' requires an ExtendedPaginationInterface.');
+        }
+
         $pagesCount = PaginationUtil::getPagesCount($pagination);
-        $current = $pagination->getPage();
+        $current = (int) $pagination->getPosition();
 
         if ($pagesCount < $current) {
             $current = $pagesCount;
         }
 
+        /** @var int $pageRange */
         $pageRange = $options['page_range'];
         if ($pageRange > $pagesCount) {
             $pageRange = $pagesCount;
         }
 
-        $delta = \ceil($pageRange / 2);
+        $delta = (int) \ceil($pageRange / 2);
 
         if ($current - $delta > $pagesCount - $pageRange) {
             $pages = \range($pagesCount - $pageRange + 1, $pagesCount);
@@ -71,7 +80,7 @@ class RangeType extends AbstractPaginationType
             $pages = \range($offset + 1, $offset + $pageRange);
         }
 
-        $proximity = \floor($pageRange / 2);
+        $proximity = (int) \floor($pageRange / 2);
         $startPage = $current - $proximity;
         $endPage = $current + $proximity;
 
@@ -87,15 +96,15 @@ class RangeType extends AbstractPaginationType
 
         $view->vars = [
             'current' => $current,
-            'pages_count' => $pagesCount,
-            'elements_count' => $pagination->getElementsCount(),
-
-            'start_page' => $startPage,
-            'end_page' => $endPage,
-            //navigation
+            'pagesCount' => $pagesCount,
+            'elementsCount' => $pagination->getElementsCount(),
+            'start' => $startPage,
+            'end' => $endPage,
             'previous' => $current - 1 > 0 ? $current - 1 : null,
             'next' => $current + 1 <= $pagesCount ? $current + 1 : null,
             'pages' => $pages,
+            'parameter' => $options['parameter'],
+            'limit' => $options['limit'],
         ];
     }
 }

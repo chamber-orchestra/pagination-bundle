@@ -10,10 +10,10 @@ use ChamberOrchestra\PaginationBundle\Paginator\ArrayPaginator;
 use ChamberOrchestra\PaginationBundle\Paginator\EntityRepositoryPaginator;
 use ChamberOrchestra\PaginationBundle\Paginator\PaginatorInterface;
 use ChamberOrchestra\PaginationBundle\Paginator\QueryPaginator;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\VarExporter\ProxyHelper;
 use Tests\Fixtures\Doctrine\DoctrineTestHelper;
 use Tests\Fixtures\Entity\Book;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 final class PaginatorIntegrationTest extends KernelTestCase
 {
@@ -24,8 +24,8 @@ final class PaginatorIntegrationTest extends KernelTestCase
         $this->assertInstanceOf(AbstractPaginator::class, $paginator);
 
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(1);
-        $pagination->method('getPerPageLimit')->willReturn(2);
+        $pagination->method('getPosition')->willReturn(1);
+        $pagination->method('getLimit')->willReturn(2);
 
         $this->assertSame([1, 2], $paginator->paginate([1, 2, 3], $pagination));
     }
@@ -43,8 +43,8 @@ final class PaginatorIntegrationTest extends KernelTestCase
 
         $paginator = new EntityRepositoryPaginator();
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(1);
-        $pagination->method('getPerPageLimit')->willReturn(2);
+        $pagination->method('getPosition')->willReturn(1);
+        $pagination->method('getLimit')->willReturn(2);
 
         $result = $paginator->paginate($repository, $pagination, ['orderBy' => ['id' => 'ASC']]);
 
@@ -68,19 +68,19 @@ final class PaginatorIntegrationTest extends KernelTestCase
             ->getQuery();
 
         $pagination = $this->createStub(PaginationInterface::class);
-        $pagination->method('getPage')->willReturn(2);
-        $pagination->method('getPerPageLimit')->willReturn(2);
+        $pagination->method('getPosition')->willReturn(2);
+        $pagination->method('getLimit')->willReturn(2);
 
         $paginator = new QueryPaginator();
         $result = $paginator->paginate($query, $pagination);
 
-        $this->assertSame(['C', 'D'], array_map(fn(Book $book) => $book->getTitle(), iterator_to_array($result)));
+        $this->assertSame(['C', 'D'], \array_map(fn (Book $book) => $book->getTitle(), \iterator_to_array($result)));
         $this->assertSame(4, $paginator->count($query));
     }
 
     private function skipIfLazyGhostUnavailable(): void
     {
-        if (PHP_VERSION_ID < 80400 && (!class_exists(ProxyHelper::class) || !method_exists(ProxyHelper::class, 'generateLazyProxy'))) {
+        if (PHP_VERSION_ID < 80400 && (!\class_exists(ProxyHelper::class) || !\method_exists(ProxyHelper::class, 'generateLazyProxy'))) {
             $this->markTestSkipped('symfony/var-exporter is required for Doctrine lazy ghosts.');
         }
     }

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace ChamberOrchestra\PaginationBundle\Helper;
+namespace ChamberOrchestra\PaginationBundle\Twig\Helper;
 
 use ChamberOrchestra\PaginationBundle\Pagination\View\PaginationView;
 use Twig\Environment;
@@ -17,11 +17,13 @@ use Twig\Environment;
 class Processor
 {
     /**
+     * @param array<string, mixed> $viewOptions
+     *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function render(Environment $env, PaginationView $view, ?string $template = null, array $viewOptions = []): string
+    public function render(Environment $env, PaginationView $view, string $template, array $viewOptions = []): string
     {
         return $env->render($template, \array_replace_recursive($view->vars, $viewOptions));
     }

@@ -11,25 +11,32 @@ declare(strict_types=1);
 
 namespace ChamberOrchestra\PaginationBundle\Pagination;
 
-use ChamberOrchestra\PaginationBundle\Pagination\Type\Resolved\ResolvedPaginationTypeInterface;
+use ChamberOrchestra\PaginationBundle\Pagination\Type\Resolved\ResolvedPaginationType;
 
-class PaginationConfigBuilder implements PaginationConfigBuilderInterface
+class PaginationConfigBuilder
 {
     /**
-     * Current page
+     * Current position (page number).
      */
-    private int|null $page = null;
+    private ?int $position = null;
     /**
-     * Per page limit of entries
+     * Maximum number of items per page.
      */
-    private int|null $perPageLimit = null;
+    private ?int $limit = null;
     /**
-     * Aware of items in the collection
+     * Aware of items in the collection.
      */
     private bool $extended = true;
+    /**
+     * Cursor-based pagination.
+     */
+    private bool $cursor = false;
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(
-        private readonly ResolvedPaginationTypeInterface $type,
+        private readonly ResolvedPaginationType $type,
         private readonly string $name,
         private readonly array $options = []
     ) {
@@ -39,10 +46,14 @@ class PaginationConfigBuilder implements PaginationConfigBuilderInterface
     {
         $config = $this->getPaginationConfig();
 
+        if ($config->isCursor()) {
+            return $config->isExtended() ? new ExtendedCursorPagination($config) : new CursorPagination($config);
+        }
+
         return $config->isExtended() ? new ExtendedPagination($config) : new Pagination($config);
     }
 
-    public function getPaginationConfig(): PaginationConfigInterface
+    public function getPaginationConfig(): self
     {
         return clone $this;
     }
@@ -52,26 +63,26 @@ class PaginationConfigBuilder implements PaginationConfigBuilderInterface
         return $this->name;
     }
 
-    public function getPage(): int
+    public function getPosition(): int
     {
-        return $this->page;
+        return $this->position ?? throw new \LogicException('Position has not been set on PaginationConfigBuilder.');
     }
 
-    public function setPage(int $page): PaginationConfigBuilderInterface
+    public function setPosition(int $position): self
     {
-        $this->page = $page;
+        $this->position = $position;
 
         return $this;
     }
 
-    public function getPerPageLimit(): int
+    public function getLimit(): int
     {
-        return $this->perPageLimit;
+        return $this->limit ?? throw new \LogicException('Limit has not been set on PaginationConfigBuilder.');
     }
 
-    public function setPerPageLimit(int $limit): PaginationConfigBuilderInterface
+    public function setLimit(int $limit): self
     {
-        $this->perPageLimit = $limit;
+        $this->limit = $limit;
 
         return $this;
     }
@@ -81,18 +92,33 @@ class PaginationConfigBuilder implements PaginationConfigBuilderInterface
         return $this->extended;
     }
 
-    public function setExtended(bool $extended): PaginationConfigBuilderInterface
+    public function setExtended(bool $extended): self
     {
         $this->extended = $extended;
 
         return $this;
     }
 
-    public function getType(): ResolvedPaginationTypeInterface
+    public function isCursor(): bool
+    {
+        return $this->cursor;
+    }
+
+    public function setCursor(bool $cursor): self
+    {
+        $this->cursor = $cursor;
+
+        return $this;
+    }
+
+    public function getType(): ResolvedPaginationType
     {
         return $this->type;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return $this->options;

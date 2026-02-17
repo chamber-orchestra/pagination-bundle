@@ -11,42 +11,49 @@ declare(strict_types=1);
 
 namespace ChamberOrchestra\PaginationBundle\Paginator;
 
-use ArrayObject;
 use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
 use ChamberOrchestra\PaginationBundle\Pagination\PaginationUtil;
 
 class ArrayPaginator extends AbstractPaginator
 {
     /**
-     * @param iterable $target
+     * @param array<string, mixed> $options
+     *
+     * @return array<mixed>|\ArrayObject<int, mixed>
      */
-    public function paginate($target, PaginationInterface $pagination, array $options = []): iterable
+    public function paginate(mixed $target, PaginationInterface $pagination, array $options = []): iterable
     {
-        if ($target instanceof ArrayObject) {
-            return new ArrayObject(
+        if ($target instanceof \ArrayObject) {
+            return new \ArrayObject(
                 \array_slice(
                     $target->getArrayCopy(),
                     PaginationUtil::getOffset($pagination),
-                    $pagination->getPerPageLimit()
+                    $pagination->getLimit()
                 )
             );
         }
 
-        /** @var $target array */
+        \assert(\is_array($target));
+
         return \array_slice(
             $target,
             PaginationUtil::getOffset($pagination),
-            $pagination->getPerPageLimit()
+            $pagination->getLimit()
         );
     }
 
-    public function count($target, array $options = []): int
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function count(mixed $target, array $options = []): int
     {
+        \assert(\is_array($target) || $target instanceof \ArrayObject);
+
         return \count($target);
     }
 
-    public function supports($target): bool
+    public function supports(mixed $target, ?PaginationInterface $pagination = null): bool
     {
-        return \is_array($target) || $target instanceof ArrayObject;
+        return \is_array($target) || $target instanceof \ArrayObject;
     }
 }

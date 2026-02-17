@@ -22,22 +22,22 @@ final class ContainerWiringTest extends KernelTestCase
 
         $pagination = $factory->create(PaginationType::class, [
             'page' => 2,
-            'per_page_limit' => 5,
+            'limit' => 5,
         ]);
 
         $view = $pagination->createView();
         $this->assertSame(2, $view->vars['current']);
-        $this->assertSame(5, $view->vars['per_page_limit']);
+        $this->assertSame(5, $view->vars['limit']);
 
         $rangePagination = $factory->create(RangeType::class, [
             'page' => 1,
-            'per_page_limit' => 2,
+            'limit' => 2,
             'page_range' => 3,
         ]);
         $this->assertInstanceOf(ExtendedPaginationInterface::class, $rangePagination);
 
         $rangePagination->setElementsCount(6);
         $rangeView = $rangePagination->createView();
-        $this->assertSame(3, $rangeView->vars['pages_count']);
+        $this->assertSame(3, $rangeView->vars['pagesCount']);
     }
 }

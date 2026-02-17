@@ -22,50 +22,54 @@ class QueryPaginator extends AbstractPaginator
     public const string HINT_FETCH_JOIN_COLLECTION = 'pagination.fetch_join_collection';
 
     /**
+     * @param array<string, mixed> $options
+     *
+     * @return iterable<mixed>
+     *
      * @throws \Exception
      */
-    public function paginate($target, PaginationInterface $pagination, array $options = []): iterable
+    public function paginate(mixed $target, PaginationInterface $pagination, array $options = []): iterable
     {
-        if ($target instanceof QueryBuilder) {
-            $target = $target->getQuery();
-        }
+        $query = $target instanceof QueryBuilder ? $target->getQuery() : $target;
+        \assert($query instanceof Query);
 
-        $target
+        $query
             ->setFirstResult(PaginationUtil::getOffset($pagination))
-            ->setMaxResults($pagination->getPerPageLimit());
+            ->setMaxResults($pagination->getLimit());
 
         $fetchJoinCollection = false;
-        if ($target->hasHint(self::HINT_FETCH_JOIN_COLLECTION)) {
-            $fetchJoinCollection = (bool)$target->getHint(self::HINT_FETCH_JOIN_COLLECTION);
+        if ($query->hasHint(self::HINT_FETCH_JOIN_COLLECTION)) {
+            $fetchJoinCollection = (bool) $query->getHint(self::HINT_FETCH_JOIN_COLLECTION);
         }
 
-        $paginator = $this->createPaginator($target, $fetchJoinCollection);
-
-        return $paginator->getIterator();
+        return $this->createPaginator($query, $fetchJoinCollection)->getIterator();
     }
 
-    public function count($target, array $options = []): int
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function count(mixed $target, array $options = []): int
     {
-        if ($target instanceof QueryBuilder) {
-            $target = $target->getQuery();
-        }
+        $query = $target instanceof QueryBuilder ? $target->getQuery() : $target;
+        \assert($query instanceof Query);
 
         $fetchJoinCollection = false;
-        if ($target->hasHint(self::HINT_FETCH_JOIN_COLLECTION)) {
-            $fetchJoinCollection = (bool)$target->getHint(self::HINT_FETCH_JOIN_COLLECTION);
+        if ($query->hasHint(self::HINT_FETCH_JOIN_COLLECTION)) {
+            $fetchJoinCollection = (bool) $query->getHint(self::HINT_FETCH_JOIN_COLLECTION);
         }
 
-        $paginator = $this->createPaginator($target, $fetchJoinCollection);
-
-        return \count($paginator);
+        return \count($this->createPaginator($query, $fetchJoinCollection));
     }
 
+    /**
+     * @return Paginator<mixed>
+     */
     protected function createPaginator(Query $query, bool $fetchJoinCollection): Paginator
     {
         return new Paginator($query, $fetchJoinCollection);
     }
 
-    public function supports($target): bool
+    public function supports(mixed $target, ?PaginationInterface $pagination = null): bool
     {
         return \class_exists('Doctrine\ORM\Tools\Pagination\Paginator')
             && ($target instanceof Query || $target instanceof QueryBuilder);

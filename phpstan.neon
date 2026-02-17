@@ -1,0 +1,9 @@
+parameters:
+    level: max
+    paths:
+        - src
+    phpVersion: 80500
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        - identifier: trait.unused

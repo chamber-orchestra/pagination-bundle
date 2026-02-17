@@ -19,12 +19,12 @@ final class PaginatedViewIntegrationTest extends KernelTestCase
         $factory = $container->get(PaginationFactory::class);
         $pagination = $factory->create(PaginationType::class, [
             'page' => 1,
-            'per_page_limit' => 2,
+            'limit' => 2,
         ]);
 
         $view = new PaginatedView([
             ['id' => 1],
-        ], $pagination, static fn(array $item) => $item);
+        ], $pagination, static fn (array $item) => $item);
 
         $headers = $view->getHeaders();
 

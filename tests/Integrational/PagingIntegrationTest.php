@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Integrational;
 
-use ChamberOrchestra\PaginationBundle\Paging;
-use ChamberOrchestra\PaginationBundle\Pagination\PaginationFactory;
 use ChamberOrchestra\PaginationBundle\Pagination\ExtendedPaginationInterface;
+use ChamberOrchestra\PaginationBundle\Pagination\PaginationFactory;
 use ChamberOrchestra\PaginationBundle\Pagination\PaginationUtil;
 use ChamberOrchestra\PaginationBundle\Pagination\Type\PaginationType;
 use ChamberOrchestra\PaginationBundle\Pagination\Type\RangeType;
 use ChamberOrchestra\PaginationBundle\Paginator\ArrayPaginator;
 use ChamberOrchestra\PaginationBundle\Paginator\PaginatorRegistry;
+use ChamberOrchestra\PaginationBundle\Paging;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 final class PagingIntegrationTest extends KernelTestCase
@@ -26,7 +26,7 @@ final class PagingIntegrationTest extends KernelTestCase
 
         $pagination = $factory->create(PaginationType::class, [
             'page' => 2,
-            'per_page_limit' => 2,
+            'limit' => 2,
         ]);
 
         $result = $paging->paginate([1, 2, 3, 4], $pagination);
@@ -42,7 +42,7 @@ final class PagingIntegrationTest extends KernelTestCase
         $factory = $container->get(PaginationFactory::class);
         $pagination = $factory->create(RangeType::class, [
             'page' => 1,
-            'per_page_limit' => 2,
+            'limit' => 2,
         ]);
 
         $this->assertInstanceOf(ExtendedPaginationInterface::class, $pagination);

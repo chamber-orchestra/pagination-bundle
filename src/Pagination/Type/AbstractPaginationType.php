@@ -11,9 +11,8 @@ declare(strict_types=1);
 
 namespace ChamberOrchestra\PaginationBundle\Pagination\Type;
 
-use ChamberOrchestra\PaginationBundle\Exception\InvalidOptionsException;
 use ChamberOrchestra\PaginationBundle\Exception\RuntimeException;
-use ChamberOrchestra\PaginationBundle\Pagination\PaginationConfigBuilderInterface;
+use ChamberOrchestra\PaginationBundle\Pagination\PaginationConfigBuilder;
 use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
 use ChamberOrchestra\PaginationBundle\Pagination\View\PaginationView;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,57 +29,63 @@ abstract class AbstractPaginationType implements PaginationTypeInterface
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'page_parameter' => 'page',
-            'per_page_limit' => 12, // per page limit of entries
-            'page' => null, //current page, if null request parameter will be used
+            'parameter' => 'page',
+            'limit' => 12, // maximum number of items per page
+            'page' => null, // current page, if null request parameter will be used
             'extended' => false, // does pagination need to know the entries amount
         ]);
 
         $resolver->setAllowedTypes('extended', 'bool');
-        $resolver->setAllowedTypes('page_parameter', 'string');
-        $resolver->setAllowedTypes('per_page_limit', 'int');
-        $resolver->setNormalizer('per_page_limit', function (Options $options, $value) {
-            $limit = \abs((int)$value);
-            if (!$limit) {
-                throw new InvalidOptionsException("Parameter 'limit' must be a positive int.");
-            }
-
-            return $limit;
-        });
+        $resolver->setAllowedTypes('parameter', 'string');
+        $resolver->setAllowedTypes('limit', 'int');
+        $resolver->setNormalizer('limit', Normalizer\LimitNormalizer::normalize(...));
 
         $resolver->setAllowedTypes('page', ['int', 'null']);
         $requestStack = $this->requestStack;
-        $resolver->setNormalizer('page', function (Options $options, int|null $value) use ($requestStack): int {
+        $resolver->setNormalizer('page', function (Options $options, ?int $value) use ($requestStack): int {
             if (null !== $value) {
                 return $value;
             }
 
             $request = $requestStack->getMainRequest();
             if (null === $request) {
-                throw new RuntimeException('No master request.');
+                throw new RuntimeException('No main request available.');
             }
 
-            return \abs($request->query->getInt($options['page_parameter'], 1));
+            /** @var string $parameter */
+            $parameter = $options['parameter'];
+
+            return \abs($request->query->getInt($parameter, 1));
         });
     }
 
-    public function buildPagination(PaginationConfigBuilderInterface $builder, array $options): void
+    public function buildPagination(PaginationConfigBuilder $builder, array $options): void
     {
+        /** @var int $page */
+        $page = $options['page'];
+        /** @var int $limit */
+        $limit = $options['limit'];
+        /** @var bool $extended */
+        $extended = $options['extended'];
+
         $builder
-            ->setPage($options['page'])
-            ->setPerPageLimit($options['per_page_limit'])
-            ->setExtended($options['extended']);
+            ->setPosition($page)
+            ->setLimit($limit)
+            ->setExtended($extended);
     }
 
     public function buildView(PaginationView $view, PaginationInterface $pagination, array $options): void
     {
-    }
+        /** @var string $parameter */
+        $parameter = $options['parameter'];
+        /** @var int $limit */
+        $limit = $options['limit'];
 
-    public function finishView(PaginationView $view, PaginationInterface $pagination, array $options): void
-    {
-        $view->vars = \array_replace_recursive($view->vars, [
-            'page_parameter' => $options['page_parameter'],
-            'per_page_limit' => $options['per_page_limit'],
+        /** @var array<string, mixed> $merged */
+        $merged = \array_replace_recursive($view->vars, [
+            'parameter' => $parameter,
+            'limit' => $limit,
         ]);
+        $view->vars = $merged;
     }
 }
