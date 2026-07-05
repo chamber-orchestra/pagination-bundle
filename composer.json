@@ -26,23 +26,23 @@
   ],
   "require": {
     "php": "^8.5",
-    "symfony/dependency-injection": "8.0.*",
-    "symfony/config": "8.0.*",
-    "symfony/framework-bundle": "8.0.*",
-    "symfony/runtime": "8.0.*",
-    "symfony/options-resolver": "8.0.*"
+    "symfony/dependency-injection": "8.1.*",
+    "symfony/config": "8.1.*",
+    "symfony/framework-bundle": "8.1.*",
+    "symfony/runtime": "8.1.*",
+    "symfony/options-resolver": "8.1.*"
   },
   "require-dev": {
     "phpunit/phpunit": "^13.0",
     "symfony/test-pack": "^1.2",
-    "symfony/form": "8.0.*",
-    "chamber-orchestra/view-bundle": "8.0.*",
+    "symfony/form": "8.1.*",
+    "chamber-orchestra/view-bundle": "8.1.*",
     "doctrine/orm": "3.6.*",
     "doctrine/doctrine-bundle": "3.2.*",
     "twig/twig": "3.*",
     "phpstan/phpstan": "^2.1",
     "friendsofphp/php-cs-fixer": "^3.94",
-    "symfony/uid": "8.0.*"
+    "symfony/uid": "8.1.*"
   },
   "autoload": {
     "psr-4": {
@@ -65,7 +65,7 @@
   "extra": {
     "symfony": {
       "allow-contrib": false,
-      "require": "8.0.*"
+      "require": "8.1.*"
     }
   },
   "config": {
