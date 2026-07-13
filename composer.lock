@@ -2167,16 +2167,16 @@
     "packages-dev": [
         {
             "name": "chamber-orchestra/view-bundle",
-            "version": "v8.1.1",
+            "version": "v8.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chamber-orchestra/view-bundle.git",
-                "reference": "516a29c3dd66f91b7d9dc6c73eae06bb4258f68b"
+                "reference": "5c0fd28fc412f5da093a7ec9116472b305c6ae6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chamber-orchestra/view-bundle/zipball/516a29c3dd66f91b7d9dc6c73eae06bb4258f68b",
-                "reference": "516a29c3dd66f91b7d9dc6c73eae06bb4258f68b",
+                "url": "https://api.github.com/repos/chamber-orchestra/view-bundle/zipball/5c0fd28fc412f5da093a7ec9116472b305c6ae6b",
+                "reference": "5c0fd28fc412f5da093a7ec9116472b305c6ae6b",
                 "shasum": ""
             },
             "require": {
@@ -2198,7 +2198,11 @@
                 "phpbench/phpbench": "^1.4",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^13.0",
+                "symfony/security-core": "^8.1",
                 "symfony/test-pack": "^1.2"
+            },
+            "suggest": {
+                "symfony/security-core": "Required for user-scoped response caching (SecurityAwareTrait, PrivateCachedView)"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -2242,7 +2246,7 @@
                 "issues": "https://github.com/chamber-orchestra/view-bundle/issues",
                 "source": "https://github.com/chamber-orchestra/view-bundle"
             },
-            "time": "2026-07-04T19:26:49+00:00"
+            "time": "2026-07-07T11:04:16+00:00"
         },
         {
             "name": "clue/ndjson-react",
