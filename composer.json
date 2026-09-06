@@ -38,8 +38,8 @@
     "symfony/form": "8.1.*",
     "chamber-orchestra/view-bundle": "8.1.*",
     "doctrine/orm": "3.6.*",
-    "doctrine/doctrine-bundle": "3.2.*|3.3.*",
-    "twig/twig": "3.*",
+    "doctrine/doctrine-bundle": "3.3.*",
+    "twig/twig": "^3.28",
     "phpstan/phpstan": "^2.2",
     "friendsofphp/php-cs-fixer": "^3.95",
     "symfony/uid": "8.1.*"
