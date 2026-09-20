@@ -80,7 +80,7 @@ final class PaginationEntityRepositoryTraitTest extends TestCase
 
         $this->assertSame(['matched'], $result);
         $this->assertSame($criteria, $object->matchedCriteria);
-        $this->assertSame(['id' => 'DESC'], $criteria->getOrderings());
+        $this->assertSame(['id' => \SortDirection::Descending], $criteria->getOrderings());
         $this->assertSame(4, $criteria->getMaxResults());
     }
 
@@ -105,7 +105,7 @@ final class PaginationEntityRepositoryTraitTest extends TestCase
 
         $this->assertSame(['matched'], $result);
         $this->assertSame($criteria, $object->matchedCriteria);
-        $this->assertSame(['id' => 'ASC'], $criteria->getOrderings());
+        $this->assertSame(['id' => \SortDirection::Ascending], $criteria->getOrderings());
         $this->assertNull($criteria->getMaxResults());
     }
 
