@@ -65,7 +65,7 @@ final class EntityRepositoryPaginatorTest extends TestCase
         $this->assertSame($collection, $result);
         $this->assertSame(5, $criteria->getMaxResults());
         $this->assertSame(5, $criteria->getFirstResult());
-        $this->assertSame(['id' => 'DESC'], $criteria->getOrderings());
+        $this->assertSame(['id' => \SortDirection::Descending], $criteria->getOrderings());
     }
 
     public function testPaginateWithArrayCriteriaUsesFindBy(): void

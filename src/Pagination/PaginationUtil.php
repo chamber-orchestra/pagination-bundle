@@ -12,11 +12,32 @@ declare(strict_types=1);
 namespace ChamberOrchestra\PaginationBundle\Pagination;
 
 use ChamberOrchestra\PaginationBundle\Exception\LogicException;
+use Doctrine\Common\Collections\Order;
 
 class PaginationUtil
 {
     private function __construct()
     {
+    }
+
+    /**
+     * Normalizes ordering directions for Criteria::orderBy().
+     *
+     * doctrine/collections 3.x requires the Order enum where 2.x accepted plain
+     * strings, so string directions are still accepted here and converted.
+     *
+     * @param array<string, string|Order>|null $orderings
+     *
+     * @return array<string, Order>
+     */
+    public static function normalizeOrderings(?array $orderings): array
+    {
+        return \array_map(
+            static fn (string|Order $direction): Order => $direction instanceof Order
+                ? $direction
+                : Order::from(\strtoupper($direction)),
+            $orderings ?? [],
+        );
     }
 
     public static function getOffset(PaginationInterface $pagination): int

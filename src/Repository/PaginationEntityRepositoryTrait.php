@@ -13,6 +13,7 @@ namespace ChamberOrchestra\PaginationBundle\Repository;
 
 use ChamberOrchestra\PaginationBundle\Exception\LogicException;
 use ChamberOrchestra\PaginationBundle\Pagination\PaginationInterface;
+use ChamberOrchestra\PaginationBundle\Pagination\PaginationUtil;
 use ChamberOrchestra\PaginationBundle\PaginationAwareTrait;
 use ChamberOrchestra\PaginationBundle\PagingInterface;
 use Doctrine\Common\Collections\Criteria;
@@ -40,7 +41,7 @@ trait PaginationEntityRepositoryTrait
         }
 
         if ($criteria instanceof Criteria) {
-            $criteria->orderBy($orderBy ?: [])->setMaxResults($pagination);
+            $criteria->orderBy(PaginationUtil::normalizeOrderings($orderBy))->setMaxResults($pagination);
 
             return $this->matching($criteria);
         }

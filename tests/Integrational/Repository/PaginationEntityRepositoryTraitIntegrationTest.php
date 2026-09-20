@@ -63,7 +63,7 @@ final class PaginationEntityRepositoryTraitIntegrationTest extends KernelTestCas
         $titles = \array_map(static fn (Book $book) => $book->getTitle(), $books);
 
         $this->assertSame(['C', 'B'], $titles);
-        $this->assertSame(['id' => 'DESC'], $criteria->getOrderings());
+        $this->assertSame(['id' => \SortDirection::Descending], $criteria->getOrderings());
         $this->assertSame(2, $criteria->getMaxResults());
     }
 
