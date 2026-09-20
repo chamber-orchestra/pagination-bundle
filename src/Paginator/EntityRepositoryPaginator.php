@@ -35,7 +35,7 @@ class EntityRepositoryPaginator extends AbstractPaginator
             $criteria
                 ->setFirstResult(PaginationUtil::getOffset($pagination))
                 ->setMaxResults($pagination->getLimit())
-                ->orderBy($orderBy ?: []);
+                ->orderBy(PaginationUtil::normalizeOrderings($orderBy));
 
             return $target->matching($criteria);
         }
