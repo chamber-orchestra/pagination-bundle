@@ -156,6 +156,6 @@ When writing tests, follow existing patterns: unit tests under `tests/Unit/` mir
 
 ## Dependencies
 
-- Requires PHP 8.5, Symfony 8.0 components (`dependency-injection`, `config`, `framework-bundle`, `runtime`, `options-resolver`)
+- Requires PHP 8.5, Symfony 8.2 components (`dependency-injection`, `config`, `framework-bundle`, `runtime`, `options-resolver`)
 - Optional: `doctrine/orm` 3.6+ and `doctrine/doctrine-bundle` for Doctrine paginators, `twig/twig` 3.x for Twig rendering, `chamber-orchestra/view-bundle` 8.0 for `PaginatedView`, `symfony/uid` for ULID cursor support
 - Main branch is `main`
